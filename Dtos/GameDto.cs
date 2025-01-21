@@ -5,4 +5,8 @@ public record class GameDto(int Id, string Name, string Genre, decimal Price, Da
     public GameDto(CreateGameDto game, int id) : this(id, game.Name, game.Genre, game.Price, game.ReleaseDate)
     {
     }
+
+    public GameDto(UpdateGameDto game, int id) : this(id, game.Name, game.Genre, game.Price, game.ReleaseDate)
+    {
+    }
 }

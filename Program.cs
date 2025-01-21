@@ -28,6 +28,19 @@ internal class Program
             games.Add(newGame);
             return Results.CreatedAtRoute(GetGameEndpoint, new { id = newGame.Id }, newGame);
         });
+
+        app.MapPut("/games/{id}", (int id, UpdateGameDto game) =>
+        {
+            var existingGame = games.FirstOrDefault(g => g.Id == id);
+            if (existingGame is null)
+            {
+                return Results.NotFound();
+            }
+
+            var updatedGame = new GameDto(game, id);
+            games[games.IndexOf(existingGame)] = updatedGame;
+            return Results.Ok(updatedGame);
+        });
         app.Run();
     }
 }
