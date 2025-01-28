@@ -12,16 +12,17 @@ namespace GameStore.Api.Endpoints
             new GameDto(3, "Cyberpunk 2077", "RPG", 199.99m, new DateOnly(2020, 12, 10)),
         };
 
-        public static WebApplication MapGamesEndPoints(this WebApplication app)
+        public static RouteGroupBuilder MapGamesEndPoints(this WebApplication app)
         {
             const string GetGameEndpoint = "GetGameById";
 
-            app.MapGet("/games", () => games);
-            app.MapGet("/", () => "Hello World!");
+            var group = app.MapGroup("/games");
+
+            group.MapGet("/", () => games);
 
             //GET
-            app.MapGet(
-                    "/games/{id}",
+            group.MapGet(
+                    "/{id}",
                     (int id) =>
                     {
                         GameDto? game = games.FirstOrDefault(g => g.Id == id);
@@ -31,8 +32,8 @@ namespace GameStore.Api.Endpoints
                 .WithName(GetGameEndpoint);
 
             //POST
-            app.MapPost(
-                "/games",
+            group.MapPost(
+                "/",
                 (CreateGameDto game) =>
                 {
                     var newGame = new GameDto(game, games.Count + 1);
@@ -46,8 +47,8 @@ namespace GameStore.Api.Endpoints
             );
 
             //PUT
-            app.MapPut(
-                "/games/{id}",
+            group.MapPut(
+                "/{id}",
                 (int id, UpdateGameDto game) =>
                 {
                     var existingGame = games.FirstOrDefault(g => g.Id == id);
@@ -63,8 +64,8 @@ namespace GameStore.Api.Endpoints
             );
 
             //DEETE
-            app.MapDelete(
-                "/games/{id}",
+            group.MapDelete(
+                "/{id}",
                 (int id) =>
                 {
                     var existingGame = games.FirstOrDefault(g => g.Id == id);
@@ -77,7 +78,7 @@ namespace GameStore.Api.Endpoints
                     return Results.NoContent();
                 }
             );
-            return app;
+            return group;
         }
     }
 }
